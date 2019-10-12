@@ -1,12 +1,5 @@
 #!/bin/bash
 
-#Variables
-COPYDATE=$(date +"%Y-%m-%d %T")
-FILEDATE=$(date +"%Y-%m-%d")
-SERVERIP=192.168.0.73
-COMMENT=1
-
-
 #File Paths
 LOGDIR=~/cleanup_logs
 LASTRUN=~/cleanup_logs/last_run_log.txt
@@ -18,6 +11,13 @@ RUNRESULT=$LOGDIR/run_result.txt
 SSHKEY=~/.ssh/backup_key
 CAMPATH=/var/lib/motion
 SERVERPATH=/srv/motion
+
+#Variables
+COPYDATE=$(date +"%Y-%m-%d %T")
+FILEDATE=$(date +"%Y-%m-%d")
+SERVERIP=$LOGDIR/server.txt
+USER=$LOGDIR/user.txt
+COMMENT=1
 
 #Log Setup Function
 log_setup() {
