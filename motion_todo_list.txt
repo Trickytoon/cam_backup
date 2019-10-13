@@ -1,4 +1,7 @@
-1. File counts 
-2. Logic on file counts
-3. Branch to backup other assets 
+1. Integrity checks post copy - file counts at least 
+2. Logic on file counts to recover non copied files
+3. Purge the local machine on successful copy - currently managed separately
+4. Expand to backing up other assets - would require recursive backup through folder structures - rsync?
+5. Linked to above - loop through a list of assets or to next oldest asset
+6. Backup to cloud storage?
 
