@@ -1,5 +1,10 @@
 #!/bin/bash
 
+#Variables
+COPYDATE=$(date +"%Y-%m-%d %T")
+FILEDATE=$(date +"%Y-%m-%d")
+COMMENT=1
+
 #File Paths
 LOGDIR=~/cleanup_logs
 LASTRUN=~/cleanup_logs/last_run_log.txt
@@ -14,10 +19,6 @@ SERVERPATH=/srv/motion
 SERVERIP=$LOGDIR/server.txt
 CRED=$LOGDIR/user.txt
 
-#Variables
-COPYDATE=$(date +"%Y-%m-%d %T")
-FILEDATE=$(date +"%Y-%m-%d")
-COMMENT=1
 
 #Log Setup Function
 log_setup() {
