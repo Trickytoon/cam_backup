@@ -1,4 +1,4 @@
-1. Obfuscate ip in file
-2. Obfuscate user in file
-3. File counts 
-4. Logic on file counts
+1. File counts 
+2. Logic on file counts
+3. Branch to backup other assets 
+
