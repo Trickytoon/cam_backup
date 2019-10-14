@@ -16,9 +16,16 @@ RUNRESULT=$LOGDIR/run_result.txt
 SSHKEY=~/.ssh/backup_key
 CAMPATH=/var/lib/motion
 SERVERPATH=/srv/motion
+<<<<<<< HEAD
+SERVERIP=$(cat $LOGDIR/server.txt)
+CRED=$(cat $LOGDIR/user.txt)
+CREDFILE=$LOGDIR/user.txt
+SERVERFILE=$LOGDIR/server.txt
+=======
 SERVERIP=$LOGDIR/server.txt
 CRED=$LOGDIR/user.txt
 
+>>>>>>> af61d3e84edd1eb0fb43e489c0c6a3e2c14b49b5
 
 #Log Setup Function
 log_setup() {
@@ -64,12 +71,12 @@ path_check() {
 	exit 2
 	fi
 	
-	if [ ! -f "$CRED" ];
+	if [ ! -f "$CREDFILE" ];
 	then echo $COPYDATE Step $COMMENT: ERROR User credentials file not accessible, exiting >> $LASTRUN
 	exit 2
 	fi
 
-	if [ ! -f "$SERVERIP" ];
+	if [ ! -f "$SERVERFILE" ];
 	then echo $COPYDATE Step $COMMENT: ERROR Server IP file list not accessible, exiting >> $LASTRUN
 	exit 2
 	fi
@@ -105,13 +112,13 @@ copy_files (){
 	let "COMMENT ++"
 
 	#Copy .avi files
-	scp -i $SSHKEY $CAMPATH/*.avi $CRED @$SERVERIP:$SERVERPATH/avi 2>>$AVILOG 
+	scp -i $SSHKEY $CAMPATH/*.avi $CRED@$SERVERIP:$SERVERPATH/avi 2>>$AVILOG 
 
 	echo $COPYDATE Step $COMMENT: Copying .jpg files to the backup server >>$LASTRUN
 	let "COMMENT ++"
 
 	#Copy .jpg files
-	scp -i $SSHKEY $CAMPATH/*.jpg $CRED @$SERVERIP:$SERVERPATH/jpg 2>>$JPGLOG 
+	scp -i $SSHKEY $CAMPATH/*.jpg $CRED@$SERVERIP:$SERVERPATH/jpg 2>>$JPGLOG 
 
 	echo $COPYDATE Step $COMMENT: Copy completed >>$LASTRUN
 	let "COMMENT ++"
@@ -128,9 +135,9 @@ process_exit () {
 	echo $COPYDATE Step $COMMENT: Copying logs to backup server >>$LASTRUN
 	let "COMMENT ++"
 
-	scp -i $SSHKEY $AVILOG $CRED @$SERVERIP:$SERVERPATH/avi_error.txt
-	scp -i $SSHKEY $JPGLOG $CRED @$SERVERIP:$SERVERPATH/jpg_error.txt
-	scp -i $SSHKEY $RUNRESULT $CRED @$SERVERIP:$SERVERPATH/run_result.txt
+	scp -i $SSHKEY $AVILOG $CRED@$SERVERIP:$SERVERPATH/avi_error.txt
+	scp -i $SSHKEY $JPGLOG $CRED@$SERVERIP:$SERVERPATH/jpg_error.txt
+	scp -i $SSHKEY $RUNRESULT $CRED@$SERVERIP:$SERVERPATH/run_result.txt
 
 	echo $COPYDATE Step $COMMENT: Logs copied to backup server >>$LASTRUN
 	let "COMMENT ++"
