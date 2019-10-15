@@ -16,16 +16,11 @@ RUNRESULT=$LOGDIR/run_result.txt
 SSHKEY=~/.ssh/backup_key
 CAMPATH=/var/lib/motion
 SERVERPATH=/srv/motion
-<<<<<<< HEAD
 SERVERIP=$(cat $LOGDIR/server.txt)
 CRED=$(cat $LOGDIR/user.txt)
 CREDFILE=$LOGDIR/user.txt
 SERVERFILE=$LOGDIR/server.txt
-=======
-SERVERIP=$LOGDIR/server.txt
-CRED=$LOGDIR/user.txt
 
->>>>>>> af61d3e84edd1eb0fb43e489c0c6a3e2c14b49b5
 
 #Log Setup Function
 log_setup() {
