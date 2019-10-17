@@ -4,6 +4,10 @@
 COPYDATE=$(date +"%Y-%m-%d %T")
 FILEDATE=$(date +"%Y-%m-%d")
 COMMENT=1
+SRCAVICOUNT=0
+SRCJPGCOUNT=0
+TRGAVICOUNT=0
+TRGJPGCOUNT=0
 
 #File Paths
 LOGDIR=~/cleanup_logs
@@ -16,8 +20,11 @@ RUNRESULT=$LOGDIR/run_result.txt
 SSHKEY=~/.ssh/backup_key
 CAMPATH=/var/lib/motion
 SERVERPATH=/srv/motion
-SERVERIP=$LOGDIR/server.txt
-CRED=$LOGDIR/user.txt
+SERVERIP=$(cat $LOGDIR/server.txt)
+CRED=$(cat $LOGDIR/user.txt)
+CREDFILE=$LOGDIR/user.txt
+SERVERFILE=$LOGDIR/server.txt
+SHAREDPATH=/srv/shared
 
 
 #Log Setup Function
@@ -64,12 +71,12 @@ path_check() {
 	exit 2
 	fi
 	
-	if [ ! -f "$CRED" ];
+	if [ ! -f "$CREDFILE" ];
 	then echo $COPYDATE Step $COMMENT: ERROR User credentials file not accessible, exiting >> $LASTRUN
 	exit 2
 	fi
 
-	if [ ! -f "$SERVERIP" ];
+	if [ ! -f "$SERVERFILE" ];
 	then echo $COPYDATE Step $COMMENT: ERROR Server IP file list not accessible, exiting >> $LASTRUN
 	exit 2
 	fi
@@ -99,19 +106,43 @@ server_check () {
 
 }
 
+file_count () {
+
+	case $1 in 
+		source)
+		ls $CAMPATH*.avi | wc -l > $SRCAVICOUNT
+		ls $CAMPATH*.jpg | wc -l > $SRCJPGCOUNT
+		echo $COPYDATE Step $COMMENT: $SRCAVICOUNT video files to be copied and $SRCJPGCOUNT images to be copied >> $LASTRUN
+		let "COMMENT ++"
+		;;
+		target)
+		ls $SHAREDPATH.avi | wc -l > $TRGAVICOUNT
+		ls $SHAREDPATH.jpg | wc -l > $TRGJPGCOUNT
+		echo $COPYDATE Step $COMMENT: $TRGAVICOUNT video files were copied and $TRGJPGCOUNT images were copied >> $LASTRUN
+		let "COMMENT ++"
+		;;
+		*)
+		echo $COPYDATE Step $COMMENT: Unknown option provided to file_count, exiting >> $LASTRUN
+		let "COMMENT ++"
+		;;
+	esac
+
+}
+
+
 copy_files (){
 
 	echo $COPYDATE Step $COMMENT: Copying .avi files to the backup server >> $LASTRUN
 	let "COMMENT ++"
 
 	#Copy .avi files
-	scp -i $SSHKEY $CAMPATH/*.avi $CRED @$SERVERIP:$SERVERPATH/avi 2>>$AVILOG 
+	scp -i $SSHKEY $CAMPATH/*.avi $CRED@$SERVERIP:$SERVERPATH/avi 2>>$AVILOG 
 
 	echo $COPYDATE Step $COMMENT: Copying .jpg files to the backup server >>$LASTRUN
 	let "COMMENT ++"
 
 	#Copy .jpg files
-	scp -i $SSHKEY $CAMPATH/*.jpg $CRED @$SERVERIP:$SERVERPATH/jpg 2>>$JPGLOG 
+	scp -i $SSHKEY $CAMPATH/*.jpg $CRED@$SERVERIP:$SERVERPATH/jpg 2>>$JPGLOG 
 
 	echo $COPYDATE Step $COMMENT: Copy completed >>$LASTRUN
 	let "COMMENT ++"
@@ -128,9 +159,9 @@ process_exit () {
 	echo $COPYDATE Step $COMMENT: Copying logs to backup server >>$LASTRUN
 	let "COMMENT ++"
 
-	scp -i $SSHKEY $AVILOG $CRED @$SERVERIP:$SERVERPATH/avi_error.txt
-	scp -i $SSHKEY $JPGLOG $CRED @$SERVERIP:$SERVERPATH/jpg_error.txt
-	scp -i $SSHKEY $RUNRESULT $CRED @$SERVERIP:$SERVERPATH/run_result.txt
+	scp -i $SSHKEY $AVILOG $CRED@$SERVERIP:$SERVERPATH/avi_error.txt
+	scp -i $SSHKEY $JPGLOG $CRED@$SERVERIP:$SERVERPATH/jpg_error.txt
+	scp -i $SSHKEY $RUNRESULT $CRED@$SERVERIP:$SERVERPATH/run_result.txt
 
 	echo $COPYDATE Step $COMMENT: Logs copied to backup server >>$LASTRUN
 	let "COMMENT ++"
@@ -145,5 +176,8 @@ process_exit () {
 server_check
 log_setup
 path_check
+file_count source
 copy_files
+file_count target
 process_exit
+
