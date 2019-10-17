@@ -4,10 +4,6 @@
 COPYDATE=$(date +"%Y-%m-%d %T")
 FILEDATE=$(date +"%Y-%m-%d")
 COMMENT=1
-SRCAVICOUNT=0
-SRCJPGCOUNT=0
-TRGAVICOUNT=0
-TRGJPGCOUNT=0
 
 #File Paths
 LOGDIR=~/cleanup_logs
@@ -110,15 +106,17 @@ file_count () {
 
 	case $1 in 
 		source)
-		ls $CAMPATH*.avi | wc -l > $SRCAVICOUNT
-		ls $CAMPATH*.jpg | wc -l > $SRCJPGCOUNT
-		echo $COPYDATE Step $COMMENT: $SRCAVICOUNT video files to be copied and $SRCJPGCOUNT images to be copied >> $LASTRUN
+		SRCAVICOUNT=$(ls $CAMPATH/*.avi | wc -l)
+		SRCJPGCOUNT=$(ls $CAMPATH/*.jpg | wc -l)
+		echo $SRCAVICOUNT AVI FILES AND $SRCJPGCOUNT JPG FILES
+		#echo $COPYDATE Step $COMMENT: $SRCAVICOUNT video files to be copied and $SRCJPGCOUNT images to be copied >> $LASTRUN
 		let "COMMENT ++"
 		;;
 		target)
-		ls $SHAREDPATH.avi | wc -l > $TRGAVICOUNT
-		ls $SHAREDPATH.jpg | wc -l > $TRGJPGCOUNT
-		echo $COPYDATE Step $COMMENT: $TRGAVICOUNT video files were copied and $TRGJPGCOUNT images were copied >> $LASTRUN
+		TRGAVICOUNT=$(ls $SHAREDPATH/*.avi | wc -l)
+		TRGJPGCOUNT=$(ls $SHAREDPATH/*.jpg | wc -l)
+		echo $TRGAVICOUNT AVI FILES AND $TRGJPGCOUNT JPGFILES
+		#echo $COPYDATE Step $COMMENT: $TRGAVICOUNT video files were copied and $TRGJPGCOUNT images were copied >> $LASTRUN
 		let "COMMENT ++"
 		;;
 		*)
@@ -173,11 +171,11 @@ process_exit () {
 
 #Main
 
-server_check
-log_setup
-path_check
+#server_check
+#log_setup
+#path_check
 file_count source
-copy_files
+#copy_files
 file_count target
-process_exit
+#process_exit
 
